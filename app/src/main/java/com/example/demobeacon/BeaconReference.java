@@ -9,25 +9,31 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
+import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
-import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
+import java.util.Collection;
+
+
 public class BeaconReference extends Application implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
-    private RegionBootstrap regionBootstrap;
-    private BackgroundPowerSaver backgroundPowerSaver;
     private MonitoringActivity monitoringActivity = null;
-    private String cumulativeLog = "";
+    BeaconManager beaconManager;
+    String major, minor;
 
     public void onCreate() {
         super.onCreate();
-        BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+        beaconManager = BeaconManager.getInstanceForApplication(this);
 
         // By default the AndroidBeaconLibrary will only find AltBeacons.  If you wish to make it
         // find a different type of beacon, you must specify the byte layout for that beacon's
@@ -40,7 +46,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
 
-        beaconManager.setDebug(true);
+        BeaconManager.setDebug(true);
 
 
         // Uncomment the code below to use a foreground service to scan for beacons. This unlocks
@@ -81,30 +87,8 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         // wake up the app when a beacon is seen
         Region region = new Region("backgroundRegion",
                 null, null, null);
-        regionBootstrap = new RegionBootstrap(this, region);
-
-        // simply constructing this class and holding a reference to it in your custom Application
-        // class will automatically cause the BeaconLibrary to save battery whenever the application
-        // is not visible.  This reduces bluetooth power usage by about 60%
-        backgroundPowerSaver = new BackgroundPowerSaver(this);
-
-        // If you wish to test beacon detection in the Android Emulator, you can use code like this:
-        // BeaconManager.setBeaconSimulator(new TimedBeaconSimulator() );
-        // ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator()).createTimedSimulatedBeacons();
+        RegionBootstrap regionBootstrap = new RegionBootstrap(this, region);
     }
-
-    public void disableMonitoring() {
-        if (regionBootstrap != null) {
-            regionBootstrap.disable();
-            regionBootstrap = null;
-        }
-    }
-    public void enableMonitoring() {
-        Region region = new Region("backgroundRegion",
-                null, null, null);
-        regionBootstrap = new RegionBootstrap(this, region);
-    }
-
 
     @Override
     public void didEnterRegion(Region arg0) {
@@ -112,7 +96,9 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         // Send a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
         Log.d(TAG, "Sending notification.");
-        sendNotification();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sendNotification();
+        }
         if (monitoringActivity != null) {
             // If the Monitoring Activity is visible, we log info about the beacons we have
             // seen on its display
@@ -127,7 +113,9 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     public void didDetermineStateForRegion(int state, Region region) {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void sendNotification() {
+
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification.Builder builder;
@@ -146,7 +134,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntent(new Intent(this, MonitoringActivity.class));
+        stackBuilder.addNextIntent(new Intent(this, NotificationActivity.class));
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
@@ -161,10 +149,6 @@ public class BeaconReference extends Application implements BootstrapNotifier {
 
     public void setMonitoringActivity(MonitoringActivity activity) {
         this.monitoringActivity = activity;
-    }
-
-    public String getLog() {
-        return cumulativeLog;
     }
 
 }
