@@ -2,5 +2,5 @@
     <string name="app_name">DemoBeacon</string>
     <string name="welcome">Bienvenido a</string>
     <string name="tarraco_beacons">TarracoBeacons</string>
-    <string name="notification">Activity de la notificación</string>
+    <string name="imageView">Imagen de la notificacion</string>
 </resources>

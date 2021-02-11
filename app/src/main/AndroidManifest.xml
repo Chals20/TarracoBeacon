@@ -27,7 +27,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NotificationActivity"
+            android:name=".NotificationActivityJudith"
+            android:parentActivityName=".MonitoringActivity" />
+        <activity
+            android:name=".NotificationActivityJesus"
+            android:parentActivityName=".MonitoringActivity" />
+        <activity
+            android:name=".NotificationActivityCarlos"
             android:parentActivityName=".MonitoringActivity" />
 
         <service android:name="org.altbeacon.beacon.service.BeaconService"

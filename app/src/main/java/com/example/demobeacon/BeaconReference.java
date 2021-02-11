@@ -98,6 +98,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         RegionBootstrap regionBootstrap3 = new RegionBootstrap(this, regionCarlos);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void didEnterRegion(Region region) {
         Log.d(TAG, "did enter region.");
@@ -105,18 +106,15 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         // matching a Region (defined above) are first seen.
         if(region.equals(regionJesus)){
             title = "Beacon Jesus";
+            sendNotification(title);
         } else if(region.equals(regionJudith)){
-            title = "Beacon Judith";
+            title = "Plaça Imperial Tarraco";
+            sendNotification(title);
         } else if(region.equals(regionCarlos)){
             title = "Beacon Carlos";
-        } else {
-            title = "Beacon desconegut";
-        }
-
-        Log.d(TAG, "Sending notification.");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sendNotification(title);
         }
+
         if (monitoringActivity != null) {
             // If the Monitoring Activity is visible, we log info about the beacons we have
             // seen on its display
@@ -152,7 +150,13 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntent(new Intent(this, NotificationActivity.class));
+        if(title.equals("Beacon Jesus")){
+            stackBuilder.addNextIntent(new Intent(this, NotificationActivityJesus.class));
+        } else if(title.equals("Plaça Imperial Tarraco")){
+            stackBuilder.addNextIntent(new Intent(this, NotificationActivityJudith.class));
+        }else if(title.equals("Beacon Carlos")){
+            stackBuilder.addNextIntent(new Intent(this, NotificationActivityCarlos.class));
+        }
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,

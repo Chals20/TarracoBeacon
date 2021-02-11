@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="serif-monospace"
         android:text="@string/tarraco_beacons"
-        android:textSize="45sp"
+        android:textSize="42sp"
         android:textStyle="bold"
         android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="parent"
