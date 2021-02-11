@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
@@ -29,7 +30,8 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
     private MonitoringActivity monitoringActivity = null;
     BeaconManager beaconManager;
-    String major, minor;
+    String title;
+    Region regionJesus, regionJudith, regionCarlos;
 
     public void onCreate() {
         super.onCreate();
@@ -85,19 +87,35 @@ public class BeaconReference extends Application implements BootstrapNotifier {
 
         Log.d(TAG, "setting up background monitoring for beacons and power saving");
         // wake up the app when a beacon is seen
-        Region region = new Region("backgroundRegion",
-                null, null, null);
-        RegionBootstrap regionBootstrap = new RegionBootstrap(this, region);
+        regionJesus = new Region("beaconBackground1",
+                Identifier.parse("b9407f30-f5f8-466e-aff9-25556b57fe6d"), Identifier.parse("10527"), Identifier.parse("32676"));
+        regionJudith = new Region("beaconBackground2",
+                Identifier.parse("b9407f30-f5f8-466e-aff9-25556b57fe6d"), Identifier.parse("6314"), Identifier.parse("20675"));
+        regionCarlos = new Region("beaconBackground3",
+                Identifier.parse("b9407f30-f5f8-466e-aff9-25556b57fe6d"), Identifier.parse("52176"), Identifier.parse("49395"));
+        RegionBootstrap regionBootstrap1 = new RegionBootstrap(this, regionJesus);
+        RegionBootstrap regionBootstrap2 = new RegionBootstrap(this, regionJudith);
+        RegionBootstrap regionBootstrap3 = new RegionBootstrap(this, regionCarlos);
     }
 
     @Override
-    public void didEnterRegion(Region arg0) {
+    public void didEnterRegion(Region region) {
         Log.d(TAG, "did enter region.");
         // Send a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
+        if(region.equals(regionJesus)){
+            title = "Beacon Jesus";
+        } else if(region.equals(regionJudith)){
+            title = "Beacon Judith";
+        } else if(region.equals(regionCarlos)){
+            title = "Beacon Carlos";
+        } else {
+            title = "Beacon desconegut";
+        }
+
         Log.d(TAG, "Sending notification.");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sendNotification();
+            sendNotification(title);
         }
         if (monitoringActivity != null) {
             // If the Monitoring Activity is visible, we log info about the beacons we have
@@ -114,7 +132,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void sendNotification() {
+    private void sendNotification(String title) {
 
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -141,7 +159,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentTitle("Beacon detectado");
+        builder.setContentTitle(title);
         builder.setContentText("Pulsa para ver los detalles");
         builder.setContentIntent(resultPendingIntent);
         notificationManager.notify(1, builder.build());
