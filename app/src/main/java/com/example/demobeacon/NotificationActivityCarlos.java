@@ -17,7 +17,7 @@ public class NotificationActivityCarlos extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification);
         ImageView image = findViewById(R.id.imageView);
-        Picasso.get().load("https://s2.wklcdn.com/image_72/2188616/22555187/14357633Master.jpg").resize(1000,562).into(image);
+        Picasso.get().load("https://upload.wikimedia.org/wikipedia/commons/e/e7/Roman_circus_of_Tarraco_02.jpg").resize(1000,562).into(image);
         TextView title = findViewById(R.id.title);
         title.setText("Circ Romà");
         TextView description = findViewById(R.id.description);
