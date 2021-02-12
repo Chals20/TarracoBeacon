@@ -105,7 +105,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         // Send a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
         if(region.equals(regionJesus)){
-            title = "Beacon Jesus";
+            title = "Balcó del Mediterrani";
             sendNotification(title);
         } else if(region.equals(regionJudith)){
             title = "Plaça Imperial Tarraco";
@@ -150,7 +150,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        if(title.equals("Beacon Jesus")){
+        if(title.equals("Balcó del Mediterrani")){
             stackBuilder.addNextIntent(new Intent(this, NotificationActivityJesus.class));
         } else if(title.equals("Plaça Imperial Tarraco")){
             stackBuilder.addNextIntent(new Intent(this, NotificationActivityJudith.class));
