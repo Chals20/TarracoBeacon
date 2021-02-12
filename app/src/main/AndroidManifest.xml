@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NotificationActivityJudith"
+            android:name=".NotificationActivity"
             android:parentActivityName=".MonitoringActivity" />
         <activity
             android:name=".NotificationActivityJesus"

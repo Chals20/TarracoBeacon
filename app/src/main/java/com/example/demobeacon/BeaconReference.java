@@ -30,7 +30,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
     private MonitoringActivity monitoringActivity = null;
     BeaconManager beaconManager;
-    String title;
+    String beacon, title;
     Region regionJesus, regionJudith, regionCarlos;
 
     public void onCreate() {
@@ -103,17 +103,6 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     public void didEnterRegion(Region region) {
         Log.d(TAG, "did enter region.");
         // Send a notification to the user whenever a Beacon
-        // matching a Region (defined above) are first seen.
-        /*if(region.equals(regionJesus)){
-            title = "Balcó del Mediterrani";
-            sendNotification(title);
-        } else if(region.equals(regionJudith)){
-            title = "Plaça Imperial Tarraco";
-            sendNotification(title);
-        } else if(region.equals(regionCarlos)){
-            title = "Circ Tarraco";
-            sendNotification(title);
-        }*/
         sendNotification(region);
 
         if (monitoringActivity != null) {
@@ -150,17 +139,23 @@ public class BeaconReference extends Application implements BootstrapNotifier {
             builder.setPriority(Notification.PRIORITY_HIGH);
         }
 
+        Intent notification;
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        if(region.equals(regionJesus)){
-            title = "Balcó del Mediterrani";
-            stackBuilder.addNextIntent(new Intent(this, NotificationActivityJesus.class));
-        } else if(region.equals(regionJudith)){
-            title = "Plaça Imperial Tarraco";
-            stackBuilder.addNextIntent(new Intent(this, NotificationActivityJudith.class));
-        }else if(region.equals(regionCarlos)){
-            title = "Circ Tarraco";
-            stackBuilder.addNextIntent(new Intent(this, NotificationActivityCarlos.class));
+        notification = new Intent(this, NotificationActivity.class);
+        beacon = region.getId1().toString() + region.getId2().toString() + region.getId3().toString();
+        switch (region.getUniqueId()) {
+            case ("beaconBackground1"):
+                title = "Balcó del Mediterrani";
+                break;
+            case ("beaconBackground2"):
+                title = "Plaça Imperial Tarraco";
+                break;
+            case ("beaconBackground3"):
+                title = "Circ Romà";
+                break;
         }
+        notification.putExtra("notificacio", beacon);
+        stackBuilder.addNextIntent(notification);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
