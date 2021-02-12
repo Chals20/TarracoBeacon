@@ -104,16 +104,17 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         Log.d(TAG, "did enter region.");
         // Send a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
-        if(region.equals(regionJesus)){
+        /*if(region.equals(regionJesus)){
             title = "Balcó del Mediterrani";
             sendNotification(title);
         } else if(region.equals(regionJudith)){
             title = "Plaça Imperial Tarraco";
             sendNotification(title);
         } else if(region.equals(regionCarlos)){
-            title = "Beacon Carlos";
+            title = "Circ Tarraco";
             sendNotification(title);
-        }
+        }*/
+        sendNotification(region);
 
         if (monitoringActivity != null) {
             // If the Monitoring Activity is visible, we log info about the beacons we have
@@ -130,7 +131,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void sendNotification(String title) {
+    private void sendNotification(Region region) {
 
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -150,11 +151,14 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        if(title.equals("Balcó del Mediterrani")){
+        if(region.equals(regionJesus)){
+            title = "Balcó del Mediterrani";
             stackBuilder.addNextIntent(new Intent(this, NotificationActivityJesus.class));
-        } else if(title.equals("Plaça Imperial Tarraco")){
+        } else if(region.equals(regionJudith)){
+            title = "Plaça Imperial Tarraco";
             stackBuilder.addNextIntent(new Intent(this, NotificationActivityJudith.class));
-        }else if(title.equals("Beacon Carlos")){
+        }else if(region.equals(regionCarlos)){
+            title = "Circ Tarraco";
             stackBuilder.addNextIntent(new Intent(this, NotificationActivityCarlos.class));
         }
         PendingIntent resultPendingIntent =
