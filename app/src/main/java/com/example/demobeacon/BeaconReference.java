@@ -142,7 +142,7 @@ public class BeaconReference extends Application implements BootstrapNotifier {
         Intent notification;
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         notification = new Intent(this, NotificationActivity.class);
-        beacon = region.getId1().toString() + region.getId2().toString() + region.getId3().toString();
+        beacon = region.getId1().toString() + ", " + region.getId2().toString() + ", " + region.getId3().toString();
         switch (region.getUniqueId()) {
             case ("beaconBackground1"):
                 title = "Balcó del Mediterrani";

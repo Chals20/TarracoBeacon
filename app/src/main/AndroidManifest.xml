@@ -29,13 +29,6 @@
         <activity
             android:name=".NotificationActivity"
             android:parentActivityName=".MonitoringActivity" />
-        <activity
-            android:name=".NotificationActivityJesus"
-            android:parentActivityName=".MonitoringActivity" />
-        <activity
-            android:name=".NotificationActivityCarlos"
-            android:parentActivityName=".MonitoringActivity" />
-
         <service android:name="org.altbeacon.beacon.service.BeaconService"
             tools:node="replace">
             <meta-data android:name="longScanForcingEnabled" android:value="true"/>
